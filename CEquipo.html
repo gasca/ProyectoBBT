@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Equipo</title>
+    <link rel="stylesheet" href="css/estiloform.css">
+</head>
+<body>
+  
+    <form id="formCrearEquipo">
+        <fieldset>
+            <legend>Crear Equipo</legend>
+            <label for="nombreEquipo">Nombre del Equipo:</label>
+            <input type="text" id="nombreEquipo" name="nombreEquipo" required>
+            <span id="mensajeError" class="mensajeError">El equipo ya existe</span>
+        </fieldset>
+
+        <fieldset>
+            <legend>Datos del Alumno</legend>
+            <label for="nombreAlumno">Nombre del Alumno:</label>
+            <input type="text" id="nombreAlumno" name="nombreAlumno" required>
+            <br>
+            <label for="primerApellido">Primer Apellido:</label>
+            <input type="text" id="primerApellido" name="primerApellido" required>
+            <br>
+            <label for="segundoApellido">Segundo Apellido:</label>
+            <input type="text" id="segundoApellido" name="segundoApellido" required>
+            <br>
+            <label for="grado">Grado:</label>
+            <input type="text" id="grado" name="grado" required>
+            <br>
+            <label for="grupo">Grupo:</label>
+            <input type="text" id="grupo" name="grupo" required>
+        </fieldset>
+        <div class="aniadir">
+            <img src="icons/add-user.png" alt="">
+            <label for="addAlumno">Agregar Alumno</label>
+        </div>
+        <button type="submit">Agregar</button>
+    </form>
+    <script>
+        document.getElementById('nombreEquipo').addEventListener('blur', function() {
+            var nombreEquipo = this.value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'verificar_equipo.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var mensajeError = document.getElementById('mensajeError');
+                    if (xhr.responseText === "El equipo ya existe") {
+                        mensajeError.style.display = 'inline';
+                    } else {
+                        mensajeError.style.display = 'none';
+                    }
+                }
+            };
+            xhr.send('nombreEquipo=' + encodeURIComponent(nombreEquipo));
+        });
+
+        document.getElementById('formCrearEquipo').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'crear_equipo.php', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert(xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
